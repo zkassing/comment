@@ -1,0 +1,18 @@
+检测用户是否登录
+    接口:"/check"
+    参数:无
+    返回:
+        如果登录  {exist:1}
+        如果未登录{exist:0}
+        
+    method: get
+    
+    
+发表评论
+    接口:"/comment"
+    参数: 
+        content:"评论内容"
+    method:post
+    返回值:
+        评论失败 {'status':"error"}
+        评论成功 {'status':"success"}

@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title><%= title %></title>
+    <link rel='stylesheet' href='/stylesheets/style.css'/>
+</head>
+<body>
+    <div class="wp">
+        <div class="comment-post row">
+            <textarea class="comment-text fl" placeholder="说点什么吧！" name="content"></textarea>
+            <button class="comment-btn fr">评论</button>
+        </div>
+        <div class="comment-list" data-pid="563">
+            <ul class="tab row">
+                <li class="cur">最新评论（<span><%=length%></span>）</li>
+            </ul>
+            <div class="comments-dom">
+                <div class="comments-loading" style="display: none;"><img src="/static/website/images/loading.gif" alt="正在加载 - 悦读FM"> 正在加载……</div>
+                <ul class="comments-list">
+                    <%datas.forEach(function(data){%>
+                    <!--评论列表-->
+                    <li>
+                        <div class="comment-avatar fl">
+                            <a href="javascript:;" target="_blank">
+                                <img src="/static/file/member/defaultuser">
+                            </a>
+                        </div>
+                        <div class="comment-c">
+                            <div class="comment-meta">
+                                <a href="/user/6255/" class="comment-user" target="_blank"><%=data.name%></a>
+                                <span><%=data.time%></span>
+                            </div>
+                            <div class="comment-p"><%=data.content%></div>
+                        </div>
+                    </li>
+                    <%})%>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <script src="/js/jquery-2.1.4.min.js"></script>
+    <script>
+        $(function(){
+            //检测用户是否登录
+            function checkLogin(callback){
+                $.getJSON('/check',function(data){
+                    callback(data.exist);
+                })
+            }
+            /*
+            * 功能:点击评论时，检测用户是否登录
+            * */
+            $('.comment-btn').on('click',function(){
+                var content = $('.comment-text').val();
+                checkLogin(function(data){
+                    if(!data){
+                        alert("请登录");
+                    }else{
+                        $.ajax({
+                            url:"/comment",
+                            type:'post',
+                            dataType:"json",
+                            data:{
+                                content:content
+                            },
+                            success:function(data){
+                                if(data.status=="success"){
+                                    /*成功之后渲染页面*/
+                                    var html = '<li><div class="comment-avatar fl">' +
+                                        '<a href="javascript:;" target="_blank">' +
+                                        '<img src="/static/file/member/defaultuser"></a></div>' +
+                                        '<div class="comment-c"><div class="comment-meta">' +
+                                        '<a href="/user/6255/" class="comment-user" target="_blank">张三</a>' +
+                                        '<span>2017-1-11</span></div>' +
+                                        '<div class="comment-p"></div>评论内容</div></li>'       
+                                    $('.comments-list').prepend(html);
+                                }else{
+                                    alert("评论失败")
+                                }
+                            },
+                            beforeSend:function(){
+                                $('.comment-btn').html("评论中…").attr("disabled",true).addClass("none");
+                            },
+                            complete:function(){
+                                $('.comment-btn').html("评论").attr("disabled",false).removeClass("none");
+                            }
+                        })
+                    }
+                })
+            })
+            
+            /*验证函数是否正确*/
+            /*checkLogin(function(data){
+                if(data){
+                    alert("用户已经登录");
+                }else{
+                    alert('请登录');
+                }
+            })*/
+            
+            
+        })
+        
+        
+    </script>
+</body>
+</html>
