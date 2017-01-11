@@ -5,7 +5,16 @@
     <link rel='stylesheet' href='/stylesheets/style.css'/>
 </head>
 <body>
+    
     <div class="wp">
+        <div>
+            <%if(name){%>
+            <a href="/login">登陆</a>|<a href="/register">注册</a>
+            <%}else{%>
+            <span><%=name%></span><a href="/logout">退出</a>
+
+            <%}%>
+        </div>
         <div class="comment-post row">
             <textarea class="comment-text fl" placeholder="说点什么吧！" name="content"></textarea>
             <button class="comment-btn fr">评论</button>
@@ -15,25 +24,28 @@
                 <li class="cur">最新评论（<span><%=length%></span>）</li>
             </ul>
             <div class="comments-dom">
-                <div class="comments-loading" style="display: none;"><img src="/static/website/images/loading.gif" alt="正在加载 - 悦读FM"> 正在加载……</div>
+                <!--<div class="comments-loading" style="display: none;"><img src="/static/website/images/loading.gif" alt="正在加载 - 悦读FM"> 正在加载……</div>-->
                 <ul class="comments-list">
+                    <%if(!datas.length){%>
+                    <li>暂无评论</li>
+                    <%}else{%>
                     <%datas.forEach(function(data){%>
                     <!--评论列表-->
                     <li>
                         <div class="comment-avatar fl">
                             <a href="javascript:;" target="_blank">
-                                <img src="/static/file/member/defaultuser">
+                                <img src="http://yuedu.fm/static/file/member/defaultuser">
                             </a>
                         </div>
                         <div class="comment-c">
                             <div class="comment-meta">
-                                <a href="/user/6255/" class="comment-user" target="_blank"><%=data.name%></a>
+                                <a href="javascript:;" class="comment-user" target="_blank"><%=data.name%></a>
                                 <span><%=data.time%></span>
                             </div>
                             <div class="comment-p"><%=data.content%></div>
                         </div>
                     </li>
-                    <%})%>
+                    <%})}%>
                 </ul>
             </div>
         </div>
@@ -65,14 +77,15 @@
                             },
                             success:function(data){
                                 if(data.status=="success"){
+                                    var result = data.result;
                                     /*成功之后渲染页面*/
                                     var html = '<li><div class="comment-avatar fl">' +
                                         '<a href="javascript:;" target="_blank">' +
-                                        '<img src="/static/file/member/defaultuser"></a></div>' +
+                                        '<img src="http://yuedu.fm/static/file/member/defaultuser"></a></div>' +
                                         '<div class="comment-c"><div class="comment-meta">' +
-                                        '<a href="/user/6255/" class="comment-user" target="_blank">张三</a>' +
-                                        '<span>2017-1-11</span></div>' +
-                                        '<div class="comment-p"></div>评论内容</div></li>'       
+                                        '<a href="/user/6255/" class="comment-user" target="_blank">'+result.name+'</a>' +
+                                        '<span>'+result.time+'</span></div>' +
+                                        '<div class="comment-p"></div>'+result.content+'</div></li>'       
                                     $('.comments-list').prepend(html);
                                 }else{
                                     alert("评论失败")

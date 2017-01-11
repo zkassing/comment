@@ -11,6 +11,9 @@ var login = require('./routes/login');
 var comment = require('./routes/comment');
 var check = require('./routes/check');
 var user = require('./routes/user');
+var register = require('./routes/register');
+
+
 var app = express();
 
 // view engine setup
@@ -31,7 +34,7 @@ app.use('/login', login);
 app.use('/comment',comment);
 app.use('/check',check);
 app.use('/user',user);
-
+app.use('/register',register);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {

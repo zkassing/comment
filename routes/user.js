@@ -22,5 +22,16 @@ router.post('/login',function (req, res, next) {
     })
 })
 
+router.post('/register',function(req,res,next){
+    var user = req.body.user;
+    var password = req.body.password;
+    db.query(userMap.insert,[user,password],function (err,rows) {
+        if(err){
+            res.end('注册失败')
+        }else{
+            res.redirect('/login');
+        }
+    })
+})
 
 module.exports = router;
