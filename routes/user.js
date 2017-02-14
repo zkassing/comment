@@ -10,10 +10,9 @@ router.post('/login',function (req, res, next) {
         }else{
             if(rows.length>0){
                 res.cookie('name',name);
-                if(rows[0].name == name){
+                if(rows[0].name == name) {
                     res.redirect('/');
                 }
-                
             }else{
                 res.send("用户名不存在")
             }
@@ -33,5 +32,8 @@ router.post('/register',function(req,res,next){
         }
     })
 })
-
+router.get('/logout',function(req,res,next){
+    res.clearCookie('name');
+    res.redirect('/');
+})
 module.exports = router;

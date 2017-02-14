@@ -32,10 +32,19 @@ router.post('/', function (req, res, next) {
         if(err) {
             res.send({'status':"error"})
         }else{
-            res.send({"status":"success",result:{name:name,content:content,time:date}});
+            res.send({"status":"success",result:{name:name,content:content,time:date,id:rows.insertId}});
         }
     })
 });
-
+router.post('/del',function(req,res,next){
+    var id = req.body.id;
+    db.query(contentMap.del,[id],function(err,rows){
+        if(err){
+            res.send({status:"error"});
+        }else{
+            res.send({status:"success"});
+        }
+    })
+})
 
 module.exports = router;

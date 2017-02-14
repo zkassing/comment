@@ -8,10 +8,10 @@
     
     <div class="wp">
         <div>
-            <%if(name){%>
+            <%if(!name){%>
             <a href="/login">登陆</a>|<a href="/register">注册</a>
             <%}else{%>
-            <span><%=name%></span><a href="/logout">退出</a>
+            <span><%=name%></span><a href="/user/logout">退出</a>
 
             <%}%>
         </div>
@@ -39,6 +39,9 @@
                         </div>
                         <div class="comment-c">
                             <div class="comment-meta">
+                                <%if(name==data.name){%>
+                                <a href="javascript:;" class="fr comment-delete" data-id="<%=data.id%>">x</a>
+                                <%}%>
                                 <a href="javascript:;" class="comment-user" target="_blank"><%=data.name%></a>
                                 <span><%=data.time%></span>
                             </div>
@@ -52,16 +55,16 @@
     </div>
     <script src="/js/jquery-2.1.4.min.js"></script>
     <script>
-        $(function(){
+        /*$(function(){
             //检测用户是否登录
             function checkLogin(callback){
                 $.getJSON('/check',function(data){
                     callback(data.exist);
                 })
             }
-            /*
+            /!*
             * 功能:点击评论时，检测用户是否登录
-            * */
+            * *!/
             $('.comment-btn').on('click',function(){
                 var content = $('.comment-text').val();
                 checkLogin(function(data){
@@ -78,7 +81,7 @@
                             success:function(data){
                                 if(data.status=="success"){
                                     var result = data.result;
-                                    /*成功之后渲染页面*/
+                                    /!*成功之后渲染页面*!/
                                     var html = '<li><div class="comment-avatar fl">' +
                                         '<a href="javascript:;" target="_blank">' +
                                         '<img src="http://yuedu.fm/static/file/member/defaultuser"></a></div>' +
@@ -102,19 +105,96 @@
                 })
             })
             
-            /*验证函数是否正确*/
-            /*checkLogin(function(data){
+            /!*验证函数是否正确*!/
+            /!*checkLogin(function(data){
                 if(data){
                     alert("用户已经登录");
                 }else{
                     alert('请登录');
                 }
-            })*/
+            })*!/
             
             
         })
-        
-        
+        */
+        $(function(){
+            /*$.getJSON('/check',function(data){
+                if(data.exist=="1"){
+                    alert("用户已登录");
+                }else{
+                    alert("请登录");
+                }
+            })*/
+            /*检测用户是否登录*/
+            function checkLogin(callback) {
+                $.getJSON('/check',function(data){
+                    callback(data.exist);
+                });
+            }
+            $('.comment-btn').on('click',function(){
+                checkLogin(function(data){
+                    if(data=="0"){
+                        alert('请登录');
+                    }else{
+                        var content = $('.comment-text').val();
+                        $.ajax({
+                            url:'/comment',
+                            type:'post',
+                            dataType:"json",
+                            data:{
+                                content:content
+                            },
+                            success:function (data) {
+                                if(data.status == "success"){
+                                    var count = $('.cur').children().html();
+                                    var result = data.result;
+                                    var html = '<li><div class="comment-avatar fl">' +
+                                        '<a href="javascript:;" target="_blank">' +
+                                        '<img src="http://yuedu.fm/static/file/member/defaultuser"></a></div>' +
+                                        '<div class="comment-c"><div class="comment-meta">' +
+                                        '<a href="javascript:;" class="fr comment-delete" data-id="'+result.id+'">x</a>'+
+                                        '<a href="/user/6255/" class="comment-user" target="_blank">'+result.name+'</a>' +
+                                        '<span>'+result.time+'</span></div>' +
+                                        '<div class="comment-p">'+result.content+'</div></div></li>';
+                                    $('.comments-list').prepend(html);
+                                    $('.cur').children().html(++count);
+                                    $('.comment-text').val('');
+                                }else{
+                                    alert("评论失败");
+                                }
+                            },
+                            beforeSend:function(){
+                                $('.comment-btn').html("评论中…").addClass("none").attr('disabled',true);
+                            },
+                            complete:function(){
+                                $('.comment-btn').html("评论").removeClass("none").attr('disabled',false);
+                            }
+                        });
+                        $()
+                    }
+                })
+            })
+            $(document).on('click',".comment-delete",function(){
+                var id = $(this).data('id');
+                var _this = $(this);
+                $.ajax({
+                    url:"/comment/del",
+                    type:"post",
+                    dataType:'json',
+                    data:{
+                        id:id
+                    },
+                    success:function(data){
+                        if(data.status == "success"){
+                            _this.parents('li').remove();
+                        }else{
+                            alert("删除失败")
+                        }
+                    }
+                })
+            })
+            
+        })
     </script>
 </body>
 </html>

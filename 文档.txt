@@ -15,4 +15,13 @@
     method:post
     返回值:
         评论失败 {'status':"error"}
-        评论成功 {'status':"success"}
+        评论成功 {status: "success", result: {name: "aaa", content: "内容", time: "2017-01-11 14:17:4",id:5}}
+        
+删除评论
+    接口:"/comment/del"
+    参数:
+        id:12
+    method:post
+    返回值:
+        删除成功 {status:"success"}
+        删除失败 {status:"error"}
